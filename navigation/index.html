@@ -1,0 +1,17 @@
+<html>
+<head>
+  <title>Navigation</title>
+  <script src="/lib/auth.js"></script>
+  <script>
+    auth.ensureLoggedIn('navigation');
+  </script>
+</head>
+<body>
+  <h1>Navigation</h1>
+  <button onclick="auth.logout()">Log out</button>
+  <ul>
+    <li><a href="/app-master/">App Master</a></li>
+    <li><a href="/app-details/">App Details</a></li>
+  </ul>
+</body>
+</html>

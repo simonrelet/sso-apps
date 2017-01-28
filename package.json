@@ -1,0 +1,22 @@
+{
+  "name": "sso-apps",
+  "version": "1.0.0",
+  "description": "Example of Single Sign On with multiple apps Edit",
+  "main": "login/index.html",
+  "scripts": {
+    "start": "http-server ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simonrelet/sso-apps.git"
+  },
+  "author": "Simon Relet",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/simonrelet/sso-apps/issues"
+  },
+  "homepage": "https://github.com/simonrelet/sso-apps#readme",
+  "devDependencies": {
+    "http-server": "^0.9.0"
+  }
+}

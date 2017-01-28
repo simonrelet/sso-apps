@@ -1,0 +1,36 @@
+<html>
+<head>
+  <title>App Master</title>
+  <script src="/lib/auth.js"></script>
+  <script src="/lib/data.js"></script>
+  <script>
+    auth.ensureLoggedIn('app-master');
+
+    window.onload = function() {
+      var usersList = document.getElementById('users');
+      var users = data.getAll();
+
+      var user;
+      var elt;
+      var link;
+      for (var i = 0; i < users.length; i++) {
+        user = users[i];
+        link = document.createElement('a');
+        link.setAttribute('href', '/app-details/?userId=' + user.id);
+        link.textContent = user.name;
+
+        elt = document.createElement('li');
+        elt.append(link);
+        usersList.append(elt);
+      }
+    };
+  </script>
+</head>
+<body>
+  <h1>App Master</h1>
+  <button onclick="auth.logout()">Log out</button>
+
+  <h3>Users</h3>
+  <ul id="users"></ul>
+</body>
+</html>

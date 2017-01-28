@@ -1,0 +1,27 @@
+<html>
+<head>
+  <title>App Details</title>
+  <script src="/lib/auth.js"></script>
+  <script src="/lib/queries.js"></script>
+  <script src="/lib/data.js"></script>
+  <script>
+    auth.ensureLoggedIn('app-details');
+
+    window.onload = function() {
+      var userId = parseInt(queries.parse().userId);
+      var user = isNaN(userId) ? null : data.getId(userId);
+      var userStr = user ? JSON.stringify(user, null, 2) : 'No user found';
+      document.getElementById('details').textContent = userStr;
+    };
+  </script>
+</head>
+<body>
+  <h1>App Details</h1>
+  <button onclick="auth.logout()">Log out</button>
+
+  <h3>Details</h3>
+  <pre id="details"></pre>
+
+  <a href="/app-master/">Select other user</a>
+</body>
+</html>

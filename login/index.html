@@ -1,0 +1,43 @@
+<html>
+<head>
+  <title>Login</title>
+  <script src="/lib/auth.js"></script>
+  <script src="/lib/queries.js"></script>
+  <script>
+    var redirect = queries.parse().redirect || 'navigation';
+    auth.ensureNotLoggedIn(redirect);
+
+    function login() {
+      var username = document.getElementById('username').value;
+      var password = document.getElementById('password').value;
+
+      auth.login(username, password, redirect);
+    }
+  </script>
+</head>
+<body>
+  <h1>Login</h1>
+  <div>
+    <label for="username">
+      User name
+    </label>
+    <input
+      autofocus
+      id="username"
+      type="text"
+      name="username"
+    />
+  </div>
+  <div>
+    <label for="password">
+      Password
+    </label>
+    <input
+      id="password"
+      type="password"
+      name="password"
+    />
+  </div>
+  <button onclick="login()">Log in</button>
+</body>
+</html>
