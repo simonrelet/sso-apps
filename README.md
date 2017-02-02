@@ -8,7 +8,7 @@
 npm i && npm run start
 ```
 
-Then open a browser on: [http://localhost:8080/login/](http://localhost:8080/login/)
+Then open a browser on: [http://localhost:3000/login/](http://localhost:3000/login/)
 
 # Features
 

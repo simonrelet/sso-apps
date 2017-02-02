@@ -1,36 +1,27 @@
 <html>
 <head>
   <title>App Master</title>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="/lib/auth.js"></script>
-  <script src="/lib/data.js"></script>
-  <script>
-    auth.ensureLoggedIn('app-master');
-
-    window.onload = function() {
-      var usersList = document.getElementById('users');
-      var users = data.getAll();
-
-      var user;
-      var elt;
-      var link;
-      for (var i = 0; i < users.length; i++) {
-        user = users[i];
-        link = document.createElement('a');
-        link.setAttribute('href', '/app-details/?userId=' + user.id);
-        link.textContent = user.name;
-
-        elt = document.createElement('li');
-        elt.append(link);
-        usersList.append(elt);
-      }
-    };
-  </script>
+  <script src="index.js"></script>
+  <link rel="stylesheet" type="text/css" href="/lib/style.css" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
-  <h1>App Master</h1>
-  <button onclick="auth.logout()">Log out</button>
+  <header>
+    <h1><a href="/navigation/" title="Go back">&lt;</a> App Master</h1>
+    <span>
+      <button onclick="auth.logout()">Log out</button>
+    </span>
+  </header>
 
-  <h3>Users</h3>
-  <ul id="users"></ul>
+  <div class="content">
+    <div class="app">
+      <i>Users (<span id="user-count">0</span>)</i>
+      <div id="users"></div>
+    </div>
+  </div>
+
+  <footer>v1.0</footer>
 </body>
 </html>

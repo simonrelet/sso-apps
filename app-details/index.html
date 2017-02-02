@@ -1,27 +1,31 @@
 <html>
 <head>
   <title>App Details</title>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="/lib/auth.js"></script>
   <script src="/lib/queries.js"></script>
-  <script src="/lib/data.js"></script>
-  <script>
-    auth.ensureLoggedIn('app-details');
-
-    window.onload = function() {
-      var userId = parseInt(queries.parse().userId);
-      var user = isNaN(userId) ? null : data.getId(userId);
-      var userStr = user ? JSON.stringify(user, null, 2) : 'No user found';
-      document.getElementById('details').textContent = userStr;
-    };
-  </script>
+  <script src="index.js"></script>
+  <link rel="stylesheet" type="text/css" href="/lib/style.css" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
-  <h1>App Details</h1>
-  <button onclick="auth.logout()">Log out</button>
+  <header>
+    <h1><a href="/navigation/" title="Go back">&lt;</a> App Details</h1>
+    <span>
+      <button onclick="auth.logout()">Log out</button>
+    </span>
+  </header>
 
-  <h3>Details</h3>
-  <pre id="details"></pre>
+  <div class="content">
+    <div class="app">
+      <div id="user"></div>
 
-  <a href="/app-master/">Select other user</a>
+      <div class="align-right">
+        <a href="/app-master/">Select other user</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>v1.0</footer>
 </body>
 </html>

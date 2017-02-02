@@ -3,41 +3,40 @@
   <title>Login</title>
   <script src="/lib/auth.js"></script>
   <script src="/lib/queries.js"></script>
-  <script>
-    var redirect = queries.parse().redirect || 'navigation';
-    auth.ensureNotLoggedIn(redirect);
-
-    function login() {
-      var username = document.getElementById('username').value;
-      var password = document.getElementById('password').value;
-
-      auth.login(username, password, redirect);
-    }
-  </script>
+  <script src="index.js"></script>
+  <link rel="stylesheet" type="text/css" href="/lib/style.css" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
-  <h1>Login</h1>
-  <div>
-    <label for="username">
-      User name
-    </label>
-    <input
-      autofocus
-      id="username"
-      type="text"
-      name="username"
-    />
+  <header>
+    <h1>Login</h1>
+  </header>
+
+  <div class="content">
+    <div class="app">
+      <div class="field">
+        <input
+          autofocus
+          id="username"
+          type="text"
+          name="username"
+          placeholder="Username"
+        />
+      </div>
+      <div class="field">
+        <input
+          id="password"
+          type="password"
+          name="password"
+          placeholder="Password"
+        />
+      </div>
+      <div class="field">
+        <button onclick="login()">Log in</button>
+      </div>
+    </div>
   </div>
-  <div>
-    <label for="password">
-      Password
-    </label>
-    <input
-      id="password"
-      type="password"
-      name="password"
-    />
-  </div>
-  <button onclick="login()">Log in</button>
+
+  <footer>v1.0</footer>
 </body>
 </html>

@@ -2,16 +2,27 @@
 <head>
   <title>Navigation</title>
   <script src="/lib/auth.js"></script>
-  <script>
-    auth.ensureLoggedIn('navigation');
-  </script>
+  <script src="index.js"></script>
+  <link rel="stylesheet" type="text/css" href="/lib/style.css" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
-  <h1>Navigation</h1>
-  <button onclick="auth.logout()">Log out</button>
-  <ul>
-    <li><a href="/app-master/">App Master</a></li>
-    <li><a href="/app-details/">App Details</a></li>
-  </ul>
+  <header>
+    <h1>Navigation</h1>
+    <span>
+      <button onclick="auth.logout()">Log out</button>
+    </span>
+  </header>
+
+  <div class="content">
+    <div class="app">
+      <ul>
+        <li><a href="/app-master/">App Master</a></li>
+        <li><a href="/app-details/">App Details</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>v1.0</footer>
 </body>
 </html>

@@ -1,0 +1,40 @@
+#users {
+  align-items: stretch;
+  border-top: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  max-height: 400px;
+  overflow: scroll;
+}
+
+.user {
+  align-items: center;
+  color: #333;
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
+  padding: 2px 5px;
+  text-decoration: none;
+}
+
+.user:hover {
+  background-color: #f8f8f8;
+}
+
+.user > img {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.user > .info {
+  flex: 1;
+}
+
+.user > .info > .username {
+  font-size: small;
+  color: #888;
+  font-style: italic;
+}
