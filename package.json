@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Example of Single Sign On with multiple apps Edit",
   "scripts": {
-    "db": "json-server -w db/db.json -s . -r routes.json"
+    "start": "json-server -w db/db.json -s . -r routes.json"
   },
   "repository": {
     "type": "git",

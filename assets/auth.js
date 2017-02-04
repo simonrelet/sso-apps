@@ -4,27 +4,27 @@ var auth = (function () {
   }
 
   return {
-    login: function(username, password, redirect) {
+    login: function(username, password, redirectAppId) {
       var token = btoa(username + ':' + password);
       localStorage.setItem('token', token);
-      window.location = '/' + redirect;
+      window.location = screman.createOpenLink({ appId: redirectAppId });
     },
 
-    ensureLoggedIn: function(redirect) {
+    ensureLoggedIn: function() {
       if (!getToken()) {
-        window.location = '/login/?redirect=' + redirect;
+        window.location = screman.createOpenLinkWithResult({ appId: 'screen.id.login' });
       }
     },
 
     ensureNotLoggedIn: function(redirect) {
       if (getToken()) {
-        window.location = '/' + redirect;
+        window.location = screman.createOpenLink({ appId: redirect });
       }
     },
 
     logout: function() {
       localStorage.removeItem('token');
-      window.location = '/login/';
+      window.location = screman.createOpenLink({ appId: 'screen.id.login' });
     }
   };
 }());

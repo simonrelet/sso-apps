@@ -1,5 +1,7 @@
 (function() {
-  var redirect = queries.parse().redirect || 'navigation';
+  screman.init('screen.id.login');
+
+  var redirect = screman.getReturnTo() || 'screen.id.navigation';
   auth.ensureNotLoggedIn(redirect);
 
   window.login = function() {

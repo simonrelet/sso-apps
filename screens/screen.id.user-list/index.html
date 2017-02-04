@@ -1,15 +1,16 @@
 <html>
 <head>
-  <title>App Master</title>
+  <title>User list</title>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <script src="/lib/auth.js"></script>
+  <script src="/assets/screen-manager.js"></script>
+  <script src="/assets/auth.js"></script>
   <script src="index.js"></script>
-  <link rel="stylesheet" type="text/css" href="/lib/style.css" />
+  <link rel="stylesheet" type="text/css" href="/assets/style.css" />
   <link rel="stylesheet" type="text/css" href="style.css" />
 </head>
 <body>
   <header>
-    <h1><a href="/navigation/" title="Go back">&lt;</a> App Master</h1>
+    <h1><a id="return-link" title="Go back">&lt;</a> User List</h1>
     <span>
       <button onclick="auth.logout()">Log out</button>
     </span>
@@ -22,6 +23,6 @@
     </div>
   </div>
 
-  <footer>v1.0</footer>
+  <footer>v1.0.0</footer>
 </body>
 </html>

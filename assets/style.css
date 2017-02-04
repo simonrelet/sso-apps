@@ -45,6 +45,7 @@ input {
   font-size: inherit;
   outline: 0;
   padding: 5px 10px;
+  width: 100%;
 }
 
 input:hover {

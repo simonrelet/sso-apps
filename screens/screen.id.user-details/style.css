@@ -34,8 +34,8 @@ img {
   justify-content: center;
 }
 
-.address {
-  border-right: 1px solid #ccc;
+.phones {
+  border-left: 1px solid #ccc;
 }
 
 .address,

@@ -1,5 +1,6 @@
 (function() {
-  auth.ensureLoggedIn('app-master');
+  screman.init('screen.id.user-list');
+  auth.ensureLoggedIn();
 
   function createThumbnail(user) {
     var elt = document.createElement('img');
@@ -33,9 +34,13 @@
   }
 
   function createUser(user) {
+    var url = screman.createReturnLink({
+      resultMap: { userId: user.id },
+    });
+
     var elt = document.createElement('a');
     elt.setAttribute('class', 'user');
-    elt.setAttribute('href', '/app-details/?userId=' + user.id);
+    elt.setAttribute('href', url);
     elt.setAttribute('title', getName(user) + ' (' + user.login.username + ')');
     elt.append(createThumbnail(user));
     elt.append(createInfo(user));
@@ -52,7 +57,15 @@
     }
   }
 
+  function createReturnLink() {
+    document.getElementById('return-link').setAttribute(
+      'href',
+      screman.createOpenLink({ appId: 'screen.id.navigation' }));
+  }
+
   window.onload = function() {
+    createReturnLink();
+
     axios.get('/api/users/')
       .then(function (response) {
         displayUsers(response.data);

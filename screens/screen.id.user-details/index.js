@@ -1,5 +1,6 @@
 (function() {
-  auth.ensureLoggedIn('app-details');
+  screman.init('screen.id.user-details');
+  auth.ensureLoggedIn();
 
   function createName(user) {
     var name = document.createElement('div');
@@ -67,26 +68,52 @@
     return elt;
   }
 
-  function createBottom(user) {
+  function createBottom(user, showPhones) {
     var elt = document.createElement('div');
     elt.setAttribute('class', 'bottom');
     elt.append(createAddress(user));
-    elt.append(createPhones(user));
+
+    if (showPhones) {
+      elt.append(createPhones(user));
+    }
+
     return elt;
   }
 
-  function displayUser(user) {
+  function displayUser(user, showPhones) {
     var elt = document.getElementById('user');
     elt.append(createTop(user));
-    elt.append(createBottom(user));
+    elt.append(createBottom(user, showPhones));
+  }
+
+  function setOpenLinkUrl() {
+    var url = screman.createOpenLinkWithResult({
+      appId: 'screen.id.user-list',
+      resultMap: { userId: 'user' },
+    });
+
+    var link = document.getElementById('open-link');
+    link.setAttribute('href', url);
+  }
+
+  function createReturnLink() {
+    document.getElementById('return-link').setAttribute(
+      'href',
+      screman.createOpenLink({ appId: 'screen.id.navigation' }));
   }
 
   window.onload = function() {
-    var userId = parseInt(queries.parse().userId);
+    createReturnLink();
+
+    var userId = parseInt(screman.getQueries().user);
+    var showPhones = screman.getQueries().hasOwnProperty('phones');
+
+    setOpenLinkUrl();
+
     if (!isNaN(userId)) {
       axios.get('/api/users/' + userId)
         .then(function (response) {
-          displayUser(response.data);
+          displayUser(response.data, showPhones);
         })
         .catch(function (error) {
           console.error(error);

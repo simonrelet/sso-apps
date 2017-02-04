@@ -1,0 +1,14 @@
+#parameters {
+  background-color: #f8f8f8;
+  max-height: 400px;
+  overflow: scroll;
+  padding: 20px;
+}
+
+#link {
+  max-width: 300px;
+}
+
+.field:not(:first-child) {
+  margin-top: 10px;
+}
