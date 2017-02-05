@@ -2,31 +2,36 @@
   screman.init('screen.id.user-list');
   auth.ensureLoggedIn();
 
+  const elements = {
+    userCount: null,
+    users: null,
+  };
+
   function createThumbnail(user) {
-    var elt = document.createElement('img');
+    const elt = document.createElement('img');
     elt.setAttribute('src', user.picture.thumbnail);
     return elt;
   }
 
   function getName(user) {
-    return user.name.first + ' ' + user.name.last;
+    return `${user.name.first} ${user.name.last}`;
   }
 
   function createName(user) {
-    var elt = document.createElement('div');
+    const elt = document.createElement('div');
     elt.textContent = getName(user);
     return elt;
   }
 
   function createUsername(user) {
-    var elt = document.createElement('div');
+    const elt = document.createElement('div');
     elt.setAttribute('class', 'username');
     elt.textContent = user.login.username;
     return elt;
   }
 
   function createInfo(user) {
-    var elt = document.createElement('div');
+    const elt = document.createElement('div');
     elt.setAttribute('class', 'info');
     elt.append(createName(user));
     elt.append(createUsername(user));
@@ -34,44 +39,44 @@
   }
 
   function createUser(user) {
-    var url = screman.createReturnLink({
+    const name = getName(user);
+    const url = screman.createReturnLink({
       resultMap: { userId: user.id },
     });
 
-    var elt = document.createElement('a');
+    const elt = document.createElement('a');
     elt.setAttribute('class', 'user');
     elt.setAttribute('href', url);
-    elt.setAttribute('title', getName(user) + ' (' + user.login.username + ')');
+    elt.setAttribute('title', `${name} (${user.login.username})`);
     elt.append(createThumbnail(user));
     elt.append(createInfo(user));
     return elt;
   }
 
   function displayUsers(users) {
-    var userCount = document.getElementById('user-count');
-    userCount.textContent = users.length;
-
-    var usersList = document.getElementById('users');
-    for (var i = 0; i < users.length; i++) {
-      usersList.append(createUser(users[i]));
-    }
+    elements.userCount.textContent = users.length;
+    users.forEach(user => {
+      elements.users.append(createUser(user));
+    });
   }
 
-  function createReturnLink() {
+  function bindElements() {
+    document.getElementById('log-out-button').onclick = () => auth.logout();
+    document.getElementById('current-username').textContent = auth.getUserName();
     document.getElementById('return-link').setAttribute(
       'href',
-      screman.createOpenLink({ appId: 'screen.id.navigation' }));
+      screman.createOpenLink({ appId: 'screen.id.navigation' })
+    );
+
+    elements.userCount = document.getElementById('user-count');
+    elements.users = document.getElementById('users');
   }
 
   window.onload = function() {
-    createReturnLink();
+    bindElements();
 
     axios.get('/api/users/')
-      .then(function (response) {
-        displayUsers(response.data);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+      .then(response => displayUsers(response.data))
+      .catch(error => console.error(error));
   };
 }())

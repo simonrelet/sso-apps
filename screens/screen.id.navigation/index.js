@@ -1,33 +1,40 @@
 (function() {
+  'use strict';
+
   screman.init('screen.id.navigation');
   auth.ensureLoggedIn();
 
   // can be in a JSON file.
-  var apps = {
-    // <screen-id>: <display-name>
+  const apps = Object.freeze({
     'screen.id.user-details': 'User Details',
     'screen.id.app-test': 'App Test',
+  });
+
+  const elements = {
+    links: null,
   };
 
   function createLinks() {
-    var elt = document.getElementById('links');
-    var li;
-    var a;
+    Object.keys(apps).forEach((id) => {
+      const a = document.createElement('a');
+      const li = document.createElement('li');
 
-    for (var id in apps) {
-      if (apps.hasOwnProperty(id)) {
-        a = document.createElement('a');
-        li = document.createElement('li');
+      a.setAttribute('href', screman.createOpenLink({ appId: id}));
+      a.textContent = apps[id];
+      li.append(a);
+      elements.links.append(li);
+    });
+  }
 
-        a.setAttribute('href', screman.createOpenLink({ appId: id}));
-        a.textContent = apps[id];
-        li.append(a);
-        elt.append(li);
-      }
-    }
+  function bindElements() {
+    document.getElementById('log-out-button').onclick = () => auth.logout();
+    document.getElementById('current-username').textContent = auth.getUserName();
+
+    elements.links = document.getElementById('links');
   }
 
   window.onload = function() {
+    bindElements();
     createLinks();
   }
 }())

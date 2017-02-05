@@ -1,103 +1,163 @@
 (function() {
-  var prefix = '/screens';
+  const prefix = '/screens';
 
-  var locals = {
+  const locals = {
     appId: '',
-    raw: {},
-    queries: {},
-    returnTo: '',
+    rawQueries: {},
+    inputQueries: {},
+    caller: '',
 
     // _toto=tata
-    returnQueries: {},
+    broadcastQueries: {},
 
     // ret-titi=titi
-    returnValues: {},
+    returnQueriesMap: {},
   };
 
+  function getQueriesStr() {
+    const href = window.location.href;
+    const queriesStr = href.substring(href.indexOf('?') + 1);
+    return queriesStr === href ? '' : queriesStr;
+  }
+
+  function decode(query) {
+    const parts = query.split('=');
+    return {
+      name: decodeURIComponent(parts[0]),
+      value: decodeURIComponent(parts[1] || ''),
+    };
+  }
+
+  function switchQueryType(acc, query) {
+    acc.rawQueries[query.name] = query.value;
+
+    if (query.name === 'redirect') {
+      acc.caller = query.value;
+    } else if (/^ret-/.test(query.name)) {
+      acc.returnQueriesMap[query.name.substring(4)] = query.value;
+    } else if (/^_/.test(query.name)) {
+      acc.broadcastQueries[query.name] = query.value;
+    } else {
+      acc.inputQueries[query.name] = query.value;
+    }
+
+    return acc;
+  }
+
   function parseQueries() {
-    var href = window.location.href;
-    var queriesStr = href.substring(href.indexOf('?') + 1);
-
-    if (queriesStr !== href && queriesStr) {
-      var queries = queriesStr.split('&');
-      for (var i = 0; i < queries.length; i++) {
-        var parts = queries[i].split('=');
-        var name = decodeURIComponent(parts[0]);
-        var value = decodeURIComponent(parts[1] || '');
-
-        if (name) {
-          locals.raw[name] = value;
-
-          if (name === 'redirect') {
-            locals.returnTo = value;
-          } else if (/^ret-/.test(name)) {
-            locals.returnValues[name.substring(4)] = value;
-          } else if (/^_/.test(name)) {
-            locals.returnQueries[name] = value;
-          } else {
-            locals.queries[name] = value;
-          }
-        }
-      }
+    const queriesStr = getQueriesStr();
+    if (queriesStr) {
+      queriesStr.split('&')
+        .map(decode)
+        .filter(q => !!q.name)
+        .reduce(switchQueryType, locals);
     }
   }
 
-  function queriesToString(queries, prefix, omit) {
-    prefix = prefix || function(q) { return q; };
-    omit = omit || {};
-    var res = '';
+  // function queriesToString(queries, prefix, omit) {
+  //   prefix = prefix || function(q) { return q; };
+  //   omit = omit || {};
+  //   var res = '';
+  //
+  //   var omitValues = [];
+  //   for(var q in omit) {
+  //     if (omit.hasOwnProperty(q)) {
+  //       omitValues.push(omit[q]);
+  //     }
+  //   }
+  //
+  //   for (var q in queries) {
+  //     if (queries.hasOwnProperty(q) && omitValues.indexOf(q) === -1) {
+  //       res += '&' + prefix(q) + '=' + queries[q];
+  //     }
+  //   }
+  //   return res;
+  // }
 
-    var omitValues = [];
-    for(var q in omit) {
-      if (omit.hasOwnProperty(q)) {
-        omitValues.push(omit[q]);
-      }
-    }
+  function getCaller() {
+    return locals.caller;
+  }
 
-    for (var q in queries) {
-      if (queries.hasOwnProperty(q) && omitValues.indexOf(q) === -1) {
-        res += '&' + prefix(q) + '=' + queries[q];
-      }
-    }
-    return res;
+  function getQueries() {
+    return locals.inputQueries;
+  }
+
+  function getRawQueries() {
+    return locals.rawQueries;
+  }
+
+  function init(appId) {
+    locals.appId = appId;
+    parseQueries();
+  }
+
+  function transformKeys(obj, transform) {
+    const reducer = (acc, k) => (
+      Object.assign(acc, { [transform(k)]: obj[k] })
+    );
+
+    return Object.keys(obj).reduce(reducer, {});
+  }
+
+  function omit(obj, keys) {
+    const reducer = (acc, k) => (
+      Object.assign(acc, { [k]: obj[k] })
+    );
+
+    return Object.keys(obj)
+      .filter(k => !keys.includes(k))
+      .reduce(reducer, {});
+  }
+
+  function queriesToString(queries) {
+    const queriesStr = Object.keys(queries)
+      .map(k => `${k}=${queries[k]}`)
+      .join('&');
+
+    return queriesStr ? `?${queriesStr}` : '';
+  }
+
+  function createOpenLink(options) {
+    const appUrl = `${prefix}/${options.appId}/`;
+    const queriesStr = queriesToString(options.queries || {});
+
+    return `${appUrl}${queriesStr}`;
+  }
+
+  function createOpenLinkWithResult(options) {
+    const appUrl = `${prefix}/${options.appId}/`;
+    const queriesStr = queriesToString(Object.assign(
+      { redirect: locals.appId },
+      options.queries,
+      transformKeys(options.resultMap, k => `ret-${k}`),
+      transformKeys(
+        omit(locals.rawQueries, Object.values(options.resultMap)),
+        k => `_${k}`
+      )
+    ));
+
+    return `${appUrl}${queriesStr}`;
+  }
+
+  function createReturnLink(options) {
+    const appUrl = `${prefix}/${locals.caller}/`;
+    const queriesStr = queriesToString(Object.assign(
+      transformKeys(locals.broadcastQueries, k => k.substring(1)),
+      Object.keys(options.resultMap).reduce((acc, k) => Object.assign(acc, {
+        [locals.returnQueriesMap[k]]: options.resultMap[k]
+      }), {})
+    ));
+
+    return `${appUrl}${queriesStr}`;
   }
 
   window.screman = {
-    getReturnTo: function() { return locals.returnTo; },
-    getQueries: function() { return locals.queries; },
-    getRaw: function() { return locals.raw; },
-
-    init: function(appId) {
-      locals.appId = appId;
-      parseQueries();
-    },
-
-    createOpenLink: function(options) {
-      return prefix + '/' + options.appId + '/'
-        + (options.queries ? '?' + queriesToString(options.queries) : '');
-    },
-
-    createOpenLinkWithResult: function(options) {
-      return prefix + '/' + options.appId + '/?redirect=' + locals.appId
-        + queriesToString(options.queries)
-        + queriesToString(options.resultMap, function(q) { return 'ret-' + q; })
-        + queriesToString(locals.queries, function(q) { return '_' + q; }, options.resultMap)
-        + queriesToString(locals.returnQueries, function(q) { return '_' + q; })
-        + (locals.returnTo ? '&_redirect=' + locals.returnTo : '')
-        + queriesToString(locals.returnValues, function(q) { return '_ret-' + q; });
-    },
-
-    createReturnLink: function(options) {
-      var queries = {};
-      for (var q in options.resultMap) {
-        if (options.resultMap.hasOwnProperty(q)) {
-          queries[locals.returnValues[q]] = options.resultMap[q];
-        }
-      }
-
-      return prefix + '/' + locals.returnTo + '/?'
-        + queriesToString(locals.returnQueries, function(q) { return q.substring(1); })
-        + queriesToString(queries);
-    }
+    getCaller,
+    getQueries,
+    getRawQueries,
+    init,
+    createOpenLink,
+    createOpenLinkWithResult,
+    createReturnLink,
   };
 }())

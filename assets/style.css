@@ -31,6 +31,19 @@ header a {
   text-decoration: none;
 }
 
+header > span {
+  align-items: center;
+  display: flex;
+}
+
+header > span > button {
+  margin-left: 10px;
+}
+
+header > span > span {
+  color: #aaa;
+}
+
 footer {
   background-color: white;
   border-top: 1px solid #ccc;
@@ -50,12 +63,12 @@ input {
 
 input:hover {
   border-width: 2px;
-  margin: -1px;
+  padding: 4px 9px;
 }
 
 input:focus {
   border: 2px solid #4488d7;
-  margin: -1px;
+  padding: 4px 9px;
 }
 
 button {
@@ -63,7 +76,6 @@ button {
   border: 0;
   border-radius: 2px;
   color: white;
-  cursor: pointer;
   font-family: inherit;
   font-size: inherit;
   outline: 0;
@@ -71,9 +83,14 @@ button {
   width: 100%;
 }
 
-button:hover,
+button:hover:not(:disabled),
 button:focus {
   background-color: #366dac;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.5;
 }
 
 a,

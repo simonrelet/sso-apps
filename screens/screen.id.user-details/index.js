@@ -2,22 +2,27 @@
   screman.init('screen.id.user-details');
   auth.ensureLoggedIn();
 
+  const elements = {
+    user: null,
+  };
+
   function createName(user) {
-    var name = document.createElement('div');
-    name.setAttribute('class', 'name');
-    name.textContent = user.name.first + ' ' + user.name.last;
-    return name;
+    const name = user.name;
+    const elt = document.createElement('div');
+    elt.setAttribute('class', 'name');
+    elt.textContent = `${name.first} ${name.last}`;
+    return elt;
   }
 
   function createUserName(user) {
-    var name = document.createElement('div');
-    name.setAttribute('class', 'username');
-    name.textContent = user.login.username;
-    return name;
+    const elt = document.createElement('div');
+    elt.setAttribute('class', 'username');
+    elt.textContent = user.login.username;
+    return elt;
   }
 
   function createInfo(user) {
-    var elt = document.createElement('div');
+    const elt = document.createElement('div');
     elt.setAttribute('class', 'info');
     elt.append(createName(user));
     elt.append(createUserName(user));
@@ -25,13 +30,13 @@
   }
 
   function createThumbnail(user) {
-    var elt = document.createElement('img');
+    const elt = document.createElement('img');
     elt.setAttribute('src', user.picture.medium);
     return elt;
   }
 
   function createTop(user) {
-    var elt = document.createElement('div');
+    const elt = document.createElement('div');
     elt.setAttribute('class', 'top');
     elt.append(createThumbnail(user));
     elt.append(createInfo(user));
@@ -39,14 +44,15 @@
   }
 
   function createAddress(user) {
-    var elt = document.createElement('div');
+    const location = user.location;
+    const elt = document.createElement('div');
     elt.setAttribute('class', 'address');
 
-    var line1 = document.createElement('div');
-    line1.textContent = user.location.street + ', ' + user.location.city;
+    const line1 = document.createElement('div');
+    line1.textContent = `${location.street}, ${location.city}`;
 
-    var line2 = document.createElement('div');
-    line2.textContent = user.location.state + ', ' + user.location.postcode;
+    const line2 = document.createElement('div');
+    line2.textContent = `${location.state}, ${location.postcode}`;
 
     elt.append(line1);
     elt.append(line2);
@@ -54,14 +60,14 @@
   }
 
   function createPhones(user) {
-    var elt = document.createElement('div');
+    const elt = document.createElement('div');
     elt.setAttribute('class', 'phones');
 
-    var line1 = document.createElement('div');
-    line1.textContent = 'Phone: ' + user.phone;
+    const line1 = document.createElement('div');
+    line1.textContent = `Phone: ${user.phone}`;
 
-    var line2 = document.createElement('div');
-    line2.textContent = 'Cell: ' + user.cell;
+    const line2 = document.createElement('div');
+    line2.textContent = `Cell: ${user.cell}`;
 
     elt.append(line1);
     elt.append(line2);
@@ -69,7 +75,7 @@
   }
 
   function createBottom(user, showPhones) {
-    var elt = document.createElement('div');
+    const elt = document.createElement('div');
     elt.setAttribute('class', 'bottom');
     elt.append(createAddress(user));
 
@@ -81,46 +87,40 @@
   }
 
   function displayUser(user, showPhones) {
-    var elt = document.getElementById('user');
-    elt.append(createTop(user));
-    elt.append(createBottom(user, showPhones));
+    elements.user.append(createTop(user));
+    elements.user.append(createBottom(user, showPhones));
   }
 
-  function setOpenLinkUrl() {
-    var url = screman.createOpenLinkWithResult({
-      appId: 'screen.id.user-list',
-      resultMap: { userId: 'user' },
-    });
-
-    var link = document.getElementById('open-link');
-    link.setAttribute('href', url);
-  }
-
-  function createReturnLink() {
+  function bindElements() {
+    document.getElementById('log-out-button').onclick = () => auth.logout();
+    document.getElementById('current-username').textContent = auth.getUserName();
     document.getElementById('return-link').setAttribute(
       'href',
-      screman.createOpenLink({ appId: 'screen.id.navigation' }));
+      screman.createOpenLink({ appId: 'screen.id.navigation' })
+    );
+    document.getElementById('open-link').setAttribute(
+      'href',
+      screman.createOpenLinkWithResult({
+        appId: 'screen.id.user-list',
+        resultMap: { userId: 'user' },
+      })
+    );
+
+    elements.user = document.getElementById('user');
   }
 
   window.onload = function() {
-    createReturnLink();
+    bindElements();
 
-    var userId = parseInt(screman.getQueries().user);
-    var showPhones = screman.getQueries().hasOwnProperty('phones');
-
-    setOpenLinkUrl();
+    const userId = parseInt(screman.getQueries().user);
+    const showPhones = screman.getQueries().hasOwnProperty('phones');
 
     if (!isNaN(userId)) {
-      axios.get('/api/users/' + userId)
-        .then(function (response) {
-          displayUser(response.data, showPhones);
-        })
-        .catch(function (error) {
-          console.error(error);
-        });
+      axios.get(`/api/users/${userId}`)
+        .then(response => displayUser(response.data, showPhones))
+        .catch(error => console.error(error));
     } else {
-      var elt = document.getElementById('user');
-      elt.textContent = 'No user selected';
+      elements.user.textContent = 'No user selected';
     }
   };
 }())

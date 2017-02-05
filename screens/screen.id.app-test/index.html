@@ -11,7 +11,8 @@
   <header>
     <h1><a id="return-link" title="Go back">&lt;</a> App Test</h1>
     <span>
-      <button onclick="auth.logout()">Log out</button>
+      <span id="current-username"></span>
+      <button id="log-out-button">Log out</button>
     </span>
   </header>
 
@@ -19,34 +20,6 @@
     <div class="app">
       <i>Parameters:</i>
       <pre id="parameters"></pre>
-
-      <i>Open application:</i>
-      <div class="field">
-        <input
-          autofocus
-          id="application"
-          type="text"
-          name="application"
-          placeholder="screen.id.app-test"
-        />
-      </div>
-
-      <div class="field">
-        <input
-          id="queries"
-          type="text"
-          name="queries"
-          placeholder="param1=value1&amp;param2=value2"
-        />
-      </div>
-
-      <div class="field">
-        <button onclick="createLink()">Create link</button>
-      </div>
-
-      <div class="field">
-        <div id="link"></div>
-      </div>
     </div>
   </div>
 
